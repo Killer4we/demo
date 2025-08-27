@@ -1,0 +1,147 @@
+<div class="search-results-page">
+  <!-- Include Header -->
+  <app-header [user]="user"></app-header>
+  
+  <!-- Header Section -->
+  <div class="search-header">
+    <div class="search-info">
+      <h1>{{ totalResults }} Results for "{{ searchQuery }}"</h1>
+      <div class="search-controls">
+        <div class="sort-control">
+          <label>Sort: </label>
+          <select [(ngModel)]="sortBy" (change)="onSortChange()" class="sort-select">
+            <option *ngFor="let option of sortOptions" [value]="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+        </div>
+        
+        <button class="filter-toggle-btn" (click)="toggleFiltersVisibility()">
+          <i class="fas fa-filter"></i>
+          {{ showFilters ? 'Hide Filters' : 'Show Filters' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="search-content">
+    <!-- Filters Sidebar -->
+    <aside class="filters-sidebar" [class.hidden]="!showFilters">
+      <div class="filters-header">
+        <h3>Filter</h3>
+        <button class="clear-filters-btn" (click)="clearAllFilters()">
+          Clear All
+        </button>
+      </div>
+
+      <!-- Duration Filter -->
+      <div class="filter-group">
+        <h4>Duration</h4>
+        <div class="filter-options">
+          <label *ngFor="let option of durationOptions" class="filter-option">
+            <input 
+              type="checkbox" 
+              [checked]="isFilterSelected('duration', option.value)"
+              (change)="toggleFilter('duration', option.value)">
+            <span class="checkbox-custom"></span>
+            <span class="option-label">{{ option.label }}</span>
+            <span class="option-count">({{ option.count }})</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Rating Filter -->
+      <div class="filter-group">
+        <h4>Rating</h4>
+        <div class="filter-options">
+          <label *ngFor="let option of ratingOptions" class="filter-option rating-option">
+            <input 
+              type="checkbox" 
+              [checked]="isFilterSelected('rating', option.value)"
+              (change)="toggleFilter('rating', option.value)">
+            <span class="checkbox-custom"></span>
+            <div class="rating-display">
+              <div class="stars">
+                <i *ngFor="let star of getStarArray(option.stars)" 
+                   [class]="star ? 'fas fa-star' : 'far fa-star'"></i>
+              </div>
+              <span class="rating-label">{{ option.label }}</span>
+            </div>
+            <span class="option-count">({{ option.count }})</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- AI Content Filter -->
+      <div class="filter-group">
+        <h4>AI</h4>
+        <div class="filter-options">
+          <label class="filter-option">
+            <input 
+              type="checkbox" 
+              [checked]="isFilterSelected('aiContent', true)"
+              (change)="toggleFilter('aiContent', true)">
+            <span class="checkbox-custom"></span>
+            <span class="option-label">AI Content</span>
+            <span class="option-count">({{ 120 }})</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Published Date Filter -->
+      <div class="filter-group">
+        <h4>Published Date</h4>
+        <div class="filter-options">
+          <label *ngFor="let option of publishedDateOptions" class="filter-option">
+            <input 
+              type="radio" 
+              name="publishedDate"
+              [checked]="isFilterSelected('publishedDate', option.value)"
+              (change)="toggleFilter('publishedDate', option.value)">
+            <span class="radio-custom"></span>
+            <span class="option-label">{{ option.label }}</span>
+            <span class="option-count">({{ option.count }})</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Course Level Filter -->
+      <div class="filter-group">
+        <h4>Course Level</h4>
+        <div class="filter-options">
+          <label *ngFor="let option of courseLevelOptions" class="filter-option">
+            <input 
+              type="radio" 
+              name="courseLevel"
+              [checked]="isFilterSelected('courseLevel', option.value)"
+              (change)="toggleFilter('courseLevel', option.value)">
+            <span class="radio-custom"></span>
+            <span class="option-label">{{ option.label }}</span>
+            <span class="option-count">({{ option.count }})</span>
+          </label>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Results Grid -->
+    <main class="results-main">
+      <div class="results-grid" *ngIf="filteredResults.length > 0">
+        <app-course-card 
+          *ngFor="let course of filteredResults" 
+          [course]="course"
+          class="result-item">
+        </app-course-card>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="filteredResults.length === 0">
+        <i class="fas fa-search"></i>
+        <h3>No courses found</h3>
+        <p>Try adjusting your search terms or filters to find what you're looking for.</p>
+        <button class="clear-filters-btn" (click)="clearAllFilters()">
+          Clear All Filters
+        </button>
+      </div>
+    </main>
+  </div>
+</div>

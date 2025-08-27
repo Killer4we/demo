@@ -1,0 +1,152 @@
+<header class="header">
+  <div class="header-content">
+    <!-- Product Name -->
+    <div class="product-name">
+      <h1>{{ productName }}</h1>
+    </div>
+
+    <!-- Desktop Search Bar -->
+    <div class="search-container desktop-search" *ngIf="!isMobile" (document:click)="onDocumentClick($event)">
+      <div class="search-input-wrapper">
+        <input 
+          #searchInput
+          type="text" 
+          class="search-input" 
+          placeholder="Search Courses"
+          [(ngModel)]="searchQuery"
+          (input)="onSearchInput()"
+          (focus)="onSearchInput()"
+          (keydown)="onSearchKeyPress($event)">
+        
+        <button 
+          *ngIf="searchQuery" 
+          class="clear-btn" 
+          (click)="clearSearch()">
+          <i class="fas fa-times"></i>
+        </button>
+        
+        <button class="search-btn" (click)="performSearch()">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+
+      <!-- Search Suggestions Dropdown -->
+      <div class="search-suggestions" *ngIf="showSuggestions">
+        <div 
+          class="suggestion-item" 
+          *ngFor="let suggestion of searchSuggestions"
+          (click)="selectSuggestion(suggestion)">
+          <img [src]="suggestion.thumbnail" [alt]="suggestion.title" class="suggestion-thumbnail">
+          <div class="suggestion-content">
+            <h4>{{ suggestion.title }}</h4>
+            <p>{{ suggestion.provider }}</p>
+            <span class="suggestion-meta">{{ suggestion.difficulty }} • {{ suggestion.duration }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Side Actions -->
+    <div class="header-actions">
+      <!-- Mobile Search Button -->
+      <button class="mobile-search-btn" *ngIf="isMobile" (click)="toggleMobileSearch()">
+        <i class="fas fa-search"></i>
+      </button>
+
+      <!-- Notifications -->
+      <div class="notification-container">
+        <button class="notification-btn">
+          <i class="fas fa-bell"></i>
+          <span class="notification-count" *ngIf="notificationCount > 0">{{ notificationCount }}</span>
+        </button>
+      </div>
+
+      <!-- User Profile -->
+      <div class="profile-container" (document:click)="onDocumentClick($event)">
+        <button class="profile-btn" (click)="toggleProfileDropdown()">
+          <img [src]="user?.avatar || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face'" 
+               [alt]="user?.fullName" 
+               class="profile-avatar">
+          <i class="fas fa-chevron-down profile-arrow" *ngIf="!isMobile"></i>
+        </button>
+
+        <!-- Profile Dropdown -->
+        <div class="profile-dropdown" *ngIf="showProfileDropdown">
+          <div class="dropdown-header">
+            <img [src]="user?.avatar || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face'" 
+                 [alt]="user?.fullName" 
+                 class="dropdown-avatar">
+            <div class="user-info">
+              <h3>{{ user?.fullName }}</h3>
+              <p>{{ user?.role }}</p>
+            </div>
+          </div>
+          
+          <div class="dropdown-divider"></div>
+          
+          <ul class="dropdown-menu">
+            <li><a href="#" (click)="onProfileAction('profile')">
+              <i class="fas fa-user"></i> My Profile
+            </a></li>
+            <li><a href="#" (click)="onProfileAction('admin')">
+              <i class="fas fa-cog"></i> Admin Console
+            </a></li>
+            <li><a href="#" (click)="onProfileAction('courses')">
+              <i class="fas fa-book"></i> My Courses
+            </a></li>
+            <li><a href="#" (click)="onProfileAction('blog')">
+              <i class="fas fa-blog"></i> Blog
+            </a></li>
+            <li class="dropdown-divider"></li>
+            <li><a href="#" (click)="onProfileAction('logout')" class="logout">
+              <i class="fas fa-sign-out-alt"></i> Log Out
+            </a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Search Overlay -->
+  <div class="mobile-search-overlay" *ngIf="showMobileSearch && isMobile" (document:click)="onDocumentClick($event)">
+    <div class="mobile-search-container">
+      <div class="search-input-wrapper">
+        <input 
+          #searchInput
+          type="text" 
+          class="search-input" 
+          placeholder="Search Courses"
+          [(ngModel)]="searchQuery"
+          (input)="onSearchInput()"
+          (focus)="onSearchInput()"
+          (keydown)="onSearchKeyPress($event)">
+        
+        <button 
+          *ngIf="searchQuery" 
+          class="clear-btn" 
+          (click)="clearSearch()">
+          <i class="fas fa-times"></i>
+        </button>
+        
+        <button class="close-search-btn" (click)="toggleMobileSearch()">
+          <i class="fas fa-arrow-up"></i>
+        </button>
+      </div>
+
+      <!-- Mobile Search Suggestions -->
+      <div class="search-suggestions mobile-suggestions" *ngIf="showSuggestions">
+        <div 
+          class="suggestion-item" 
+          *ngFor="let suggestion of searchSuggestions"
+          (click)="selectSuggestion(suggestion)">
+          <img [src]="suggestion.thumbnail" [alt]="suggestion.title" class="suggestion-thumbnail">
+          <div class="suggestion-content">
+            <h4>{{ suggestion.title }}</h4>
+            <p>{{ suggestion.provider }}</p>
+            <span class="suggestion-meta">{{ suggestion.difficulty }} • {{ suggestion.duration }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

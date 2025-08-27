@@ -1,0 +1,89 @@
+<div class="course-card" (click)="onCourseClick()">
+  <div class="course-thumbnail">
+    <img [src]="course.thumbnail" [alt]="course.title" class="thumbnail-image">
+    
+    <!-- Progress Overlay -->
+    <div class="progress-overlay" *ngIf="course.progress">
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="progressPercentage"></div>
+      </div>
+      <span class="progress-text">{{ progressPercentage }}% Complete</span>
+    </div>
+
+    <!-- Completion Badge -->
+    <div class="completion-badge" *ngIf="course.isCompleted">
+      <i class="fas fa-check-circle"></i>
+    </div>
+  </div>
+
+  <div class="course-content">
+    <!-- Course Title -->
+    <h3 class="course-title">{{ course.title }}</h3>
+
+    <!-- Provider -->
+    <div class="course-provider" (click)="onProviderClick($event)">
+      <img [src]="course.providerLogo" [alt]="course.provider" class="provider-logo">
+      <span class="provider-name">{{ course.provider }}</span>
+    </div>
+
+    <!-- Rating and Reviews -->
+    <div class="course-rating">
+      <div class="stars">
+        <i 
+          *ngFor="let star of ratingStars" 
+          [class]="star ? 'fas fa-star' : 'far fa-star'"
+          class="star">
+        </i>
+      </div>
+      <span class="rating-value">{{ course.rating }}</span>
+      <span class="review-count">({{ course.reviews }} reviews)</span>
+    </div>
+
+    <!-- Course Metadata -->
+    <div class="course-metadata">
+      <div class="metadata-row">
+        <span class="metadata-item">
+          <i class="fas fa-users"></i>
+          {{ course.enrollments }} Enrolled
+        </span>
+        <span class="metadata-item" [class]="difficultyClass">
+          <i class="fas fa-signal"></i>
+          {{ course.difficulty }}
+        </span>
+      </div>
+      
+      <div class="metadata-row">
+        <span class="metadata-item">
+          <i class="fas fa-clock"></i>
+          {{ course.duration }}
+        </span>
+        <span class="metadata-item" *ngIf="course.price">
+          <i class="fas fa-tag"></i>
+          {{ course.price }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Course Tags -->
+    <div class="course-tags" *ngIf="course.tags && course.tags.length > 0">
+      <span class="tag" *ngFor="let tag of course.tags.slice(0, 3)">{{ tag }}</span>
+      <span class="tag-more" *ngIf="course.tags.length > 3">+{{ course.tags.length - 3 }}</span>
+    </div>
+  </div>
+
+  <!-- Course Actions -->
+  <div class="course-actions">
+    <button class="primary-btn" *ngIf="!course.isEnrolled && !course.isCompleted">
+      <i class="fas fa-play"></i>
+      Start Course
+    </button>
+    <button class="secondary-btn" *ngIf="course.isEnrolled && !course.isCompleted">
+      <i class="fas fa-play-circle"></i>
+      Continue Learning
+    </button>
+    <button class="success-btn" *ngIf="course.isCompleted">
+      <i class="fas fa-certificate"></i>
+      View Certificate
+    </button>
+  </div>
+</div>

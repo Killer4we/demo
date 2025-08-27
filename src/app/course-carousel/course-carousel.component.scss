@@ -1,0 +1,295 @@
+.course-carousel-section {
+  margin-bottom: 3rem;
+}
+
+.carousel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.carousel-title {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.carousel-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.control-btn {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+
+  &:hover:not(.disabled) {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+  }
+
+  &.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+}
+
+.course-carousel {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 1rem 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.carousel-item {
+  flex-shrink: 0;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #888;
+
+  i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+
+  h3 {
+    color: white;
+    font-size: 1.2rem;
+    margin: 0 0 0.5rem 0;
+  }
+
+  p {
+    font-size: 0.9rem;
+    margin: 0;
+    opacity: 0.7;
+  }
+}
+
+@media (max-width: 768px) {
+  .course-carousel-section {
+    margin-bottom: 2rem;
+  }
+
+  .carousel-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0 1rem;
+  }
+
+  .carousel-title {
+    font-size: 1.25rem;
+  }
+
+  .course-carousel {
+    gap: 1rem;
+    padding: 0.75rem 0;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-left: -1rem;
+    margin-right: -1rem;
+    
+    /* Show scrollbar on mobile for better UX */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+
+    &::-webkit-scrollbar {
+      height: 4px;
+      display: block;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 2px;
+    }
+  }
+
+  .control-btn {
+    width: 35px;
+    height: 35px;
+    font-size: 0.8rem;
+  }
+
+  .empty-state {
+    padding: 3rem 1rem;
+
+    i {
+      font-size: 2.5rem;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .course-carousel-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .carousel-header {
+    padding: 0 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .carousel-title {
+    font-size: 1.1rem;
+    flex: 1;
+  }
+
+  .carousel-controls {
+    gap: 0.25rem;
+  }
+
+  .control-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 0.75rem;
+  }
+
+  .course-carousel {
+    padding: 0.5rem 0;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+  }
+
+  .empty-state {
+    padding: 2rem 0.5rem;
+
+    i {
+      font-size: 2rem;
+    }
+
+    h3 {
+      font-size: 1rem;
+    }
+
+    p {
+      font-size: 0.85rem;
+    }
+  }
+}
+
+/* Very small screens */
+@media (max-width: 320px) {
+  .carousel-title {
+    font-size: 1rem;
+  }
+
+  .control-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 0.7rem;
+  }
+
+  .course-carousel {
+    gap: 0.75rem;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .carousel-header {
+    padding: 0 2rem;
+  }
+
+  .course-carousel {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    margin-left: -2rem;
+    margin-right: -2rem;
+  }
+
+  .carousel-title {
+    font-size: 1.4rem;
+  }
+}
+
+/* Touch improvements */
+@media (hover: none) {
+  .control-btn {
+    &:active:not(.disabled) {
+      transform: scale(0.9);
+      background: rgba(255, 255, 255, 0.3);
+    }
+  }
+}
+
+/* Landscape mobile adjustments */
+@media (max-width: 768px) and (orientation: landscape) {
+  .course-carousel-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .carousel-header {
+    margin-bottom: 0.75rem;
+  }
+
+  .carousel-title {
+    font-size: 1.1rem;
+  }
+
+  .control-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 0.75rem;
+  }
+
+  .empty-state {
+    padding: 2rem 1rem;
+
+    i {
+      font-size: 2rem;
+    }
+  }
+}
+
+/* High DPI screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .course-carousel {
+    &::-webkit-scrollbar {
+      height: 6px;
+    }
+  }
+}
+
+/* Smooth carousel scrolling */
+.course-carousel {
+  scroll-snap-type: x mandatory;
+}
+
+.carousel-item {
+  scroll-snap-align: start;
+}

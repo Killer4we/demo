@@ -1,0 +1,21 @@
+<div class="dashboard">
+  <app-header [user]="user"></app-header>
+  
+  <main class="dashboard-content">
+    <app-statistics [statistics]="statistics"></app-statistics>
+    
+    <section class="courses-section">
+      <app-course-carousel
+        title="Last Viewed Courses"
+        [courses]="lastViewedCourses"
+        class="last-viewed">
+      </app-course-carousel>
+      
+      <app-course-carousel
+        title="Newly Launched"
+        [courses]="newlyLaunchedCourses"
+        class="newly-launched">
+      </app-course-carousel>
+    </section>
+  </main>
+</div>

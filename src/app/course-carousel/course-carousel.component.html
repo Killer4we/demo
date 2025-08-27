@@ -1,0 +1,37 @@
+<section class="course-carousel-section">
+  <div class="carousel-header">
+    <h2 class="carousel-title">{{ title }}</h2>
+    <div class="carousel-controls">
+      <button 
+        class="control-btn" 
+        [class.disabled]="!canScrollLeft"
+        (click)="scrollLeft()">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button 
+        class="control-btn" 
+        [class.disabled]="!canScrollRight"
+        (click)="scrollRight()">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <div 
+    class="course-carousel" 
+    #carousel 
+    (scroll)="onScroll()">
+    <app-course-card 
+      *ngFor="let course of courses" 
+      [course]="course"
+      class="carousel-item">
+    </app-course-card>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="courses.length === 0">
+    <i class="fas fa-graduation-cap"></i>
+    <h3>No courses found</h3>
+    <p>Check back later for new courses in this section.</p>
+  </div>
+</section>

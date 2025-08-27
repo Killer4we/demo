@@ -1,0 +1,143 @@
+.dashboard {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.dashboard-content {
+  padding: 0 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.courses-section {
+  margin-top: 2rem;
+}
+
+.last-viewed {
+  margin-bottom: 3rem;
+}
+
+.newly-launched {
+  margin-bottom: 3rem;
+}
+
+/* Tablet styles */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .dashboard-content {
+    padding: 0 1.5rem;
+  }
+
+  .courses-section {
+    margin-top: 1.5rem;
+  }
+
+  .last-viewed,
+  .newly-launched {
+    margin-bottom: 2.5rem;
+  }
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .dashboard {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  }
+
+  .dashboard-content {
+    padding: 0 1rem;
+  }
+
+  .courses-section {
+    margin-top: 1.5rem;
+  }
+
+  .last-viewed,
+  .newly-launched {
+    margin-bottom: 2rem;
+  }
+}
+
+/* Small mobile styles */
+@media (max-width: 576px) {
+  .dashboard-content {
+    padding: 0 0.5rem;
+  }
+
+  .courses-section {
+    margin-top: 1rem;
+  }
+
+  .last-viewed,
+  .newly-launched {
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 320px) {
+  .dashboard-content {
+    padding: 0 0.25rem;
+  }
+}
+
+/* Large screens optimization */
+@media (min-width: 1400px) {
+  .dashboard-content {
+    padding: 0 3rem;
+  }
+
+  .courses-section {
+    margin-top: 2.5rem;
+  }
+
+  .last-viewed,
+  .newly-launched {
+    margin-bottom: 4rem;
+  }
+}
+
+/* Landscape mobile adjustments */
+@media (max-width: 768px) and (orientation: landscape) {
+  .dashboard-content {
+    padding: 0 1rem;
+  }
+
+  .courses-section {
+    margin-top: 1rem;
+  }
+
+  .last-viewed,
+  .newly-launched {
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  .dashboard {
+    background: white !important;
+    color: black !important;
+  }
+
+  .dashboard-content {
+    padding: 1rem;
+    max-width: none;
+  }
+}
+
+/* High DPI adjustments */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .dashboard {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    background-attachment: fixed;
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .dashboard {
+    background: #1a1a2e;
+  }
+}

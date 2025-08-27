@@ -1,0 +1,17 @@
+<section class="statistics">
+  <div class="statistics-container">
+    <div 
+      class="stat-card" 
+      *ngFor="let stat of statisticsData"
+      (click)="onStatisticClick(stat)">
+      <div class="stat-icon" [style.background-color]="stat.color">
+        <i [class]="stat.icon"></i>
+      </div>
+      <div class="stat-content">
+        <h3 class="stat-title">{{ stat.title }}</h3>
+        <div class="stat-value">{{ stat.value }}</div>
+        <button class="stat-action">{{ stat.action }}</button>
+      </div>
+    </div>
+  </div>
+</section>

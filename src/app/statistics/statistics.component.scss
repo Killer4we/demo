@@ -1,0 +1,216 @@
+.statistics {
+  padding: 2rem 0;
+}
+
+.statistics-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 120px;
+
+  &:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.stat-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  i {
+    font-size: 1.5rem;
+    color: white;
+  }
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-title {
+  color: #bbb;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 0 0 0.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  color: white;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 0.75rem 0;
+  line-height: 1;
+}
+
+.stat-action {
+  background: none;
+  border: none;
+  color: #3498db;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #5dade2;
+    text-decoration: underline;
+  }
+}
+
+@media (max-width: 768px) {
+  .statistics {
+    padding: 1.5rem 0;
+  }
+
+  .statistics-container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 0 1rem;
+  }
+
+  .stat-card {
+    padding: 1.5rem;
+    min-height: 100px;
+    gap: 1rem;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+
+  .stat-icon {
+    width: 50px;
+    height: 50px;
+
+    i {
+      font-size: 1.2rem;
+    }
+  }
+
+  .stat-value {
+    font-size: 2rem;
+  }
+
+  .stat-title {
+    font-size: 0.8rem;
+  }
+
+  .stat-action {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .statistics {
+    padding: 1rem 0;
+  }
+
+  .statistics-container {
+    gap: 0.75rem;
+    padding: 0 0.5rem;
+  }
+
+  .stat-card {
+    padding: 1.25rem;
+    min-height: 90px;
+    flex-direction: row;
+    text-align: left;
+  }
+
+  .stat-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+
+    i {
+      font-size: 1.1rem;
+    }
+  }
+
+  .stat-content {
+    text-align: left;
+  }
+
+  .stat-value {
+    font-size: 1.75rem;
+  }
+
+  .stat-title {
+    font-size: 0.75rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-action {
+    font-size: 0.75rem;
+  }
+}
+
+/* Tablet landscape */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .statistics-container {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .stat-card {
+    padding: 1.75rem;
+  }
+
+  .stat-value {
+    font-size: 2.25rem;
+  }
+}
+
+/* Small tablet portrait */
+@media (min-width: 576px) and (max-width: 767px) {
+  .statistics-container {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+    gap: 1.25rem;
+  }
+
+  .stat-card {
+    padding: 1.5rem;
+    max-width: none;
+  }
+}
+
+/* Touch improvements */
+@media (hover: none) {
+  .stat-card {
+    &:active {
+      transform: scale(0.98);
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+
+  .stat-action:active {
+    transform: scale(0.95);
+  }
+}
