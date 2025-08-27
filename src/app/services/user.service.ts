@@ -10,13 +10,16 @@ export class UserService {
   private currentUser: any = null;
 
   constructor(private http: HttpClient) {
-    // Initialize with mock user data
+    // Initialize with mock user data - Author role for testing
     this.currentUser = {
       id: 1,
       fullName: 'Harry Shimron',
-      role: 'DC Software Engineer',
+      role: 'Author', // Changed to Author to test My Courses functionality
       email: 'harry.shimron@company.com',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face'
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
+      totalStudents: 125843,
+      rating: 4.8,
+      totalCourses: 8
     };
   }
 
@@ -38,6 +41,10 @@ export class UserService {
 
   updateUser(user: any): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/users/${user.id}`, user);
+  }
+
+  hasAuthorAccess(): boolean {
+    return this.currentUser && (this.currentUser.role === 'Author' || this.currentUser.role === 'Admin');
   }
 
   logout() {

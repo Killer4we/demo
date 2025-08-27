@@ -1,0 +1,201 @@
+<app-header [user]="user"></app-header>
+
+<div class="my-courses-container" *ngIf="!isLoading">
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb">
+    <span class="breadcrumb-item" (click)="goHome()">Home</span>
+    <span class="breadcrumb-separator">></span>
+    <span class="breadcrumb-item current">My Courses</span>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">My Courses</h1>
+      <p class="page-subtitle">Manage and track your created courses</p>
+    </div>
+    <button class="create-new-btn" (click)="createNewCourse()">
+      <i class="fas fa-plus"></i>
+      Create New
+    </button>
+  </div>
+
+  <!-- Author Stats -->
+  <div class="author-stats" *ngIf="user">
+    <div class="stat-card">
+      <div class="stat-icon">
+        <i class="fas fa-book"></i>
+      </div>
+      <div class="stat-content">
+        <span class="stat-number">{{ allCourses.length }}</span>
+        <span class="stat-label">Total Courses</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">
+        <i class="fas fa-users"></i>
+      </div>
+      <div class="stat-content">
+        <span class="stat-number">{{ user.totalStudents?.toLocaleString() || '0' }}</span>
+        <span class="stat-label">Total Students</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">
+        <i class="fas fa-star"></i>
+      </div>
+      <div class="stat-content">
+        <span class="stat-number">{{ user.rating || '0.0' }}</span>
+        <span class="stat-label">Average Rating</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <div class="stat-content">
+        <span class="stat-number">{{ getTabCount('Published') }}</span>
+        <span class="stat-label">Published</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls Section -->
+  <div class="controls-section">
+    <!-- Tabbed Navigation -->
+    <div class="tab-navigation">
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'Published'"
+        (click)="switchTab('Published')">
+        Published
+        <span class="tab-count">{{ getTabCount('Published') }}</span>
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'Draft'"
+        (click)="switchTab('Draft')">
+        Draft
+        <span class="tab-count">{{ getTabCount('Draft') }}</span>
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'Archived'"
+        (click)="switchTab('Archived')">
+        Archived
+        <span class="tab-count">{{ getTabCount('Archived') }}</span>
+      </button>
+    </div>
+
+    <!-- Search and Sort -->
+    <div class="search-sort-controls">
+      <div class="search-control">
+        <i class="fas fa-search"></i>
+        <input 
+          type="text" 
+          placeholder="Search course" 
+          [(ngModel)]="searchQuery"
+          (input)="onSearchChange()"
+          class="search-input">
+      </div>
+      <div class="sort-control">
+        <label for="sort-select">Sort:</label>
+        <select 
+          id="sort-select"
+          [(ngModel)]="sortOption"
+          (change)="onSortChange()"
+          class="sort-select">
+          <option *ngFor="let option of sortOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Course Grid -->
+  <div class="courses-grid" *ngIf="filteredCourses.length > 0">
+    <div class="course-card-wrapper" *ngFor="let course of filteredCourses">
+      <!-- Status Badge -->
+      <div class="status-badge" [class]="getStatusBadgeClass(course.status)">
+        {{ course.status }}
+      </div>
+      
+      <!-- Course Actions Dropdown -->
+      <div class="course-actions">
+        <button class="actions-trigger">
+          <i class="fas fa-ellipsis-v"></i>
+        </button>
+        <div class="actions-menu">
+          <button class="action-item" (click)="editCourse(course.id)">
+            <i class="fas fa-edit"></i>
+            Edit Course
+          </button>
+          <button class="action-item" (click)="viewCourse(course.id)">
+            <i class="fas fa-eye"></i>
+            View Details
+          </button>
+          <button class="action-item" (click)="duplicateCourse(course.id)">
+            <i class="fas fa-copy"></i>
+            Duplicate
+          </button>
+          <button class="action-item danger" *ngIf="course.status !== 'Archived'" (click)="archiveCourse(course.id)">
+            <i class="fas fa-archive"></i>
+            Archive
+          </button>
+          <button class="action-item danger" (click)="deleteCourse(course.id)">
+            <i class="fas fa-trash"></i>
+            Delete
+          </button>
+        </div>
+      </div>
+
+      <!-- Course Card -->
+      <app-course-card 
+        [course]="course" 
+        (click)="editCourse(course.id)">
+      </app-course-card>
+
+      <!-- Course Metadata -->
+      <div class="course-metadata">
+        <div class="metadata-row">
+          <span class="metadata-label">Created:</span>
+          <span class="metadata-value">{{ formatDate(course.createdDate) }}</span>
+        </div>
+        <div class="metadata-row" *ngIf="course.publishedDate">
+          <span class="metadata-label">Published:</span>
+          <span class="metadata-value">{{ formatDate(course.publishedDate) }}</span>
+        </div>
+        <div class="metadata-row">
+          <span class="metadata-label">Last Modified:</span>
+          <span class="metadata-value">{{ formatDate(course.lastModified) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="filteredCourses.length === 0 && !isLoading">
+    <div class="empty-icon">
+      <i class="fas fa-graduation-cap"></i>
+    </div>
+    <h3 class="empty-title">
+      {{ searchQuery ? 'No courses found' : 'No ' + activeTab.toLowerCase() + ' courses yet' }}
+    </h3>
+    <p class="empty-description">
+      {{ searchQuery 
+        ? 'Try adjusting your search criteria or create a new course.' 
+        : 'Start creating amazing courses to share your knowledge with the world.' }}
+    </p>
+    <button class="empty-action-btn" (click)="createNewCourse()" *ngIf="!searchQuery">
+      <i class="fas fa-plus"></i>
+      Create Your First Course
+    </button>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div class="loading-container" *ngIf="isLoading">
+  <div class="loading-spinner"></div>
+  <p>Loading your courses...</p>
+</div>

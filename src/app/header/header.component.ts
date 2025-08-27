@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CourseService } from '../services/course.service';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-header',
@@ -26,7 +27,8 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private courseService: CourseService,
-    private router: Router
+    private router: Router,
+    private userService: UserService
   ) {}
 
   ngOnInit() {
@@ -122,7 +124,10 @@ export class HeaderComponent implements OnInit {
         // Navigate to admin console
         break;
       case 'courses':
-        // Navigate to my courses
+        // Navigate to my courses - only for Authors and Admins
+        if (this.hasAuthorAccess()) {
+          this.router.navigate(['/my-courses']);
+        }
         break;
       case 'blog':
         // Navigate to blog
@@ -131,6 +136,10 @@ export class HeaderComponent implements OnInit {
         // Implement logout logic
         break;
     }
+  }
+
+  hasAuthorAccess(): boolean {
+    return this.userService.hasAuthorAccess();
   }
 
   // Close dropdowns when clicking outside

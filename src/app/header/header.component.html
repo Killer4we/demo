@@ -91,7 +91,7 @@
             <li><a href="#" (click)="onProfileAction('admin')">
               <i class="fas fa-cog"></i> Admin Console
             </a></li>
-            <li><a href="#" (click)="onProfileAction('courses')">
+            <li *ngIf="hasAuthorAccess()"><a href="#" (click)="onProfileAction('courses')">
               <i class="fas fa-book"></i> My Courses
             </a></li>
             <li><a href="#" (click)="onProfileAction('blog')">
