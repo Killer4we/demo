@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-course-card',
@@ -10,6 +11,8 @@ import { CommonModule } from '@angular/common';
 })
 export class CourseCardComponent {
   @Input() course: any = {};
+
+  constructor(private router: Router) {}
 
   get progressPercentage(): number {
     return this.course.progress || 0;
@@ -33,9 +36,8 @@ export class CourseCardComponent {
     return Array(5).fill(0).map((_, index) => index < rating ? 1 : 0);
   }
 
-  onCourseClick() {
-    console.log('Navigate to course:', this.course);
-    // Implement navigation to course details
+  navigateToCourse() {
+    this.router.navigate(['/course', this.course.id]);
   }
 
   onProviderClick(event: Event) {

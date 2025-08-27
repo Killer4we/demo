@@ -1,0 +1,376 @@
+<app-header [user]="user"></app-header>
+
+<div class="course-detail-container" *ngIf="!isLoading">
+  <!-- Course Banner -->
+  <div class="course-banner">
+    <div class="container">
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb">
+        <span class="breadcrumb-item" (click)="goHome()">Home</span>
+        <span class="breadcrumb-separator">></span>
+        <span class="breadcrumb-item current">{{ course?.title }}</span>
+      </nav>
+
+      <div class="banner-content">
+        <div class="course-info">
+          <h1 class="course-title">{{ course?.title }}</h1>
+          <p class="course-description">{{ course?.description }}</p>
+          
+          <div class="course-meta">
+            <p class="created-by">
+              Created by 
+              <a href="#" class="author-link">{{ author.name }}</a>
+            </p>
+            
+            <div class="enrollment-info">
+              <span class="enrollment-count">{{ course?.enrollments }}</span>
+            </div>
+          </div>
+
+          <button class="enroll-btn" (click)="enrollInCourse()">
+            <i class="fas fa-play"></i>
+            Enroll Now
+          </button>
+        </div>
+
+        <div class="course-thumbnail">
+          <img [src]="course?.thumbnail" [alt]="course?.title" />
+          <div class="play-overlay">
+            <i class="fas fa-play"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Course Metrics Bar -->
+  <div class="metrics-bar">
+    <div class="container">
+      <div class="metrics-grid">
+        <div class="metric-item">
+          <span class="metric-label">Level</span>
+          <span class="metric-value">{{ course?.difficulty }}</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-label">Rating</span>
+          <div class="rating-container">
+            <div class="stars">
+              <span 
+                *ngFor="let star of getStarArray(course?.rating || 0)"
+                class="star"
+                [class.full]="star === 1"
+                [class.half]="star === 0.5"
+                [class.empty]="star === 0">
+                ★
+              </span>
+            </div>
+            <span class="rating-text">{{ course?.rating }} ({{ course?.reviews }} reviews)</span>
+          </div>
+        </div>
+        <div class="metric-item">
+          <span class="metric-label">Duration</span>
+          <span class="metric-value">{{ course?.duration }}</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-label">Flexible Schedule</span>
+          <span class="metric-value">Learn at your own pace</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabbed Content Section -->
+  <div class="content-section">
+    <div class="container">
+      <!-- Tab Navigation -->
+      <div class="tab-navigation">
+        <button 
+          class="tab-btn"
+          [class.active]="activeTab === 'overview'"
+          (click)="switchTab('overview')">
+          Overview
+        </button>
+        <button 
+          class="tab-btn"
+          [class.active]="activeTab === 'content'"
+          (click)="switchTab('content')">
+          Course Content
+        </button>
+        <button 
+          class="tab-btn"
+          [class.active]="activeTab === 'author'"
+          (click)="switchTab('author')">
+          Author Details
+        </button>
+        <button 
+          class="tab-btn"
+          [class.active]="activeTab === 'testimonials'"
+          (click)="switchTab('testimonials')">
+          Testimonials
+        </button>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="tab-content">
+        <!-- Overview Tab -->
+        <div class="tab-pane" *ngIf="activeTab === 'overview'" [@fadeIn]>
+          <div class="overview-grid">
+            <div class="overview-main">
+              <!-- What you'll learn -->
+              <section class="learning-section">
+                <h3>What you'll learn</h3>
+                <ul class="learning-list">
+                  <li *ngFor="let item of course?.whatYoullLearn">
+                    <i class="fas fa-check"></i>
+                    {{ item }}
+                  </li>
+                </ul>
+              </section>
+
+              <!-- Skills you'll gain -->
+              <section class="skills-section">
+                <h3>Skills you'll gain</h3>
+                <div class="skills-tags">
+                  <span 
+                    *ngFor="let skill of course?.skillsYoullGain" 
+                    class="skill-tag">
+                    {{ skill }}
+                  </span>
+                </div>
+              </section>
+
+              <!-- Requirements -->
+              <section class="requirements-section">
+                <h3>Requirements</h3>
+                <ul class="requirements-list">
+                  <li *ngFor="let requirement of course?.requirements">
+                    <i class="fas fa-circle"></i>
+                    {{ requirement }}
+                  </li>
+                </ul>
+              </section>
+
+              <!-- Description -->
+              <section class="description-section">
+                <h3>Description</h3>
+                <div class="description-content">
+                  <p>{{ course?.description }}</p>
+                  <p>
+                    This comprehensive course will take you from complete beginner to confident data analyst. 
+                    You'll work with real datasets, learn industry-standard tools, and build a portfolio of 
+                    projects that demonstrate your skills to potential employers.
+                  </p>
+                  <p>
+                    Upon completion, you'll be prepared for roles such as Data Analyst, Business Intelligence 
+                    Analyst, and Junior Data Scientist. The skills you'll develop are in high demand across 
+                    all industries.
+                  </p>
+                </div>
+              </section>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="overview-sidebar">
+              <div class="course-card">
+                <img [src]="course?.thumbnail" [alt]="course?.title" />
+                <div class="card-content">
+                  <h4>{{ course?.title }}</h4>
+                  <div class="course-stats">
+                    <div class="stat">
+                      <i class="fas fa-users"></i>
+                      <span>{{ course?.enrollments }}</span>
+                    </div>
+                    <div class="stat">
+                      <i class="fas fa-star"></i>
+                      <span>{{ course?.rating }} ({{ course?.reviews }})</span>
+                    </div>
+                    <div class="stat">
+                      <i class="fas fa-clock"></i>
+                      <span>{{ course?.duration }}</span>
+                    </div>
+                  </div>
+                  <button class="sidebar-enroll-btn" (click)="enrollInCourse()">
+                    Enroll for {{ course?.price }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Course Content Tab -->
+        <div class="tab-pane" *ngIf="activeTab === 'content'" [@fadeIn]>
+          <div class="content-header">
+            <h3>Course Content</h3>
+            <div class="content-summary">
+              <span>{{ courseContent.totalSections }} Sections</span>
+              <span>•</span>
+              <span>{{ courseContent.totalLectures }} Lectures</span>
+              <span>•</span>
+              <span>{{ courseContent.totalDuration }} total length</span>
+            </div>
+            <button class="expand-all-btn" (click)="toggleAllSections()">
+              {{ allSectionsExpanded ? 'Collapse all sections' : 'Expand all sections' }}
+            </button>
+          </div>
+
+          <div class="curriculum-accordion">
+            <div 
+              *ngFor="let section of courseContent.sections" 
+              class="section-item">
+              <div 
+                class="section-header"
+                (click)="toggleSection(section.id)">
+                <div class="section-info">
+                  <i 
+                    class="fas fa-chevron-right expand-icon"
+                    [class.expanded]="isSectionExpanded(section.id)">
+                  </i>
+                  <h4>{{ section.title }}</h4>
+                </div>
+                <div class="section-meta">
+                  <span>{{ section.lectureCount }} lectures</span>
+                  <span>•</span>
+                  <span>{{ section.duration }}</span>
+                </div>
+              </div>
+              
+              <div 
+                class="section-content"
+                [class.expanded]="isSectionExpanded(section.id)">
+                <ul class="lecture-list">
+                  <li *ngFor="let lecture of section.lectures" class="lecture-item">
+                    <div class="lecture-info">
+                      <span class="lecture-icon">{{ getLectureIcon(lecture.type) }}</span>
+                      <span class="lecture-title">{{ lecture.title }}</span>
+                    </div>
+                    <span class="lecture-duration">{{ lecture.duration }}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Author Details Tab -->
+        <div class="tab-pane" *ngIf="activeTab === 'author'" [@fadeIn]>
+          <div class="author-profile">
+            <div class="author-header">
+              <img [src]="author.avatar" [alt]="author.name" class="author-avatar" />
+              <div class="author-info">
+                <h3>{{ author.name }}</h3>
+                <p class="author-title">{{ author.title }}</p>
+                <div class="author-stats">
+                  <div class="stat">
+                    <i class="fas fa-star"></i>
+                    <span>{{ author.rating }} rating</span>
+                  </div>
+                  <div class="stat">
+                    <i class="fas fa-users"></i>
+                    <span>{{ author.students }} students</span>
+                  </div>
+                  <div class="stat">
+                    <i class="fas fa-book"></i>
+                    <span>{{ author.courses }} courses</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="author-bio">
+              <h4>Biography</h4>
+              <div class="bio-content">
+                <p *ngFor="let paragraph of author.bio.split('\n\n')">{{ paragraph.trim() }}</p>
+              </div>
+            </div>
+
+            <div class="author-faqs">
+              <h4>Frequently Asked Questions</h4>
+              <div class="faq-list">
+                <div *ngFor="let faq of author.faqs" class="faq-item">
+                  <h5>{{ faq.question }}</h5>
+                  <p>{{ faq.answer }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonials Tab -->
+        <div class="tab-pane" *ngIf="activeTab === 'testimonials'" [@fadeIn]>
+          <div class="testimonials-grid">
+            <div *ngFor="let testimonial of testimonials" class="testimonial-card">
+              <div class="testimonial-rating">
+                <div class="stars">
+                  <span 
+                    *ngFor="let star of getStarArray(testimonial.rating)"
+                    class="star"
+                    [class.full]="star === 1"
+                    [class.empty]="star === 0">
+                    ★
+                  </span>
+                </div>
+              </div>
+              
+              <p class="testimonial-text">{{ testimonial.text }}</p>
+              
+              <div class="reviewer-info">
+                <img [src]="testimonial.reviewer.avatar" [alt]="testimonial.reviewer.name" />
+                <div class="reviewer-details">
+                  <h5>{{ testimonial.reviewer.name }}</h5>
+                  <p>{{ testimonial.reviewer.title }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Related Courses Section -->
+  <div class="related-courses-section">
+    <div class="container">
+      <h3>Related Courses</h3>
+      <div class="related-courses-grid">
+        <div 
+          *ngFor="let relatedCourse of relatedCourses" 
+          class="related-course-card"
+          (click)="navigateToCourse(relatedCourse.id)">
+          <div class="course-thumbnail">
+            <img [src]="relatedCourse.thumbnail" [alt]="relatedCourse.title" />
+            <span 
+              class="course-badge"
+              [class]="'badge-' + relatedCourse.badgeType">
+              {{ relatedCourse.badge }}
+            </span>
+          </div>
+          
+          <div class="course-info">
+            <h4>{{ relatedCourse.title }}</h4>
+            <div class="course-meta">
+              <span class="duration">
+                <i class="fas fa-clock"></i>
+                {{ relatedCourse.duration }}
+              </span>
+              <span class="rating">
+                <i class="fas fa-star"></i>
+                {{ relatedCourse.rating }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div class="loading-container" *ngIf="isLoading">
+  <div class="container">
+    <div class="loading-content">
+      <div class="spinner"></div>
+      <p>Loading course details...</p>
+    </div>
+  </div>
+</div>
