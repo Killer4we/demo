@@ -1,0 +1,1017 @@
+.course-player-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #f8fafc;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Header */
+.course-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: #f1f5f9;
+  border-radius: 8px;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+  }
+}
+
+.course-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.course-progress {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.completed-count {
+  font-size: 0.875rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.progress-bar-container {
+  width: 200px;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #059669);
+  transition: width 0.3s ease;
+}
+
+/* Main Content */
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Content Panel (Left) */
+.content-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  overflow-y: auto;
+}
+
+/* Video Container */
+.video-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: #000;
+  overflow: hidden;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #000;
+}
+
+/* Video Loading State */
+.video-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  z-index: 2;
+
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-left: 4px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+  }
+
+  p {
+    font-size: 1rem;
+    margin: 0;
+    opacity: 0.8;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Video Error State */
+.video-error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  z-index: 2;
+  max-width: 300px;
+
+  i {
+    font-size: 3rem;
+    color: #ef4444;
+    margin-bottom: 1rem;
+  }
+
+  h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+  }
+
+  p {
+    font-size: 0.875rem;
+    opacity: 0.8;
+    margin: 0 0 1.5rem;
+    line-height: 1.5;
+  }
+
+  .retry-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: #2563eb;
+    }
+  }
+}
+
+/* Video Controls */
+.video-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+  padding: 2rem 1.5rem 1rem;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+
+  &.show {
+    transform: translateY(0);
+  }
+}
+
+.progress-container {
+  margin-bottom: 1rem;
+}
+
+.progress-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+  cursor: pointer;
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #3b82f6;
+  border-radius: 3px;
+  transition: width 0.1s ease;
+}
+
+.progress-handle {
+  position: absolute;
+  top: -3px;
+  width: 12px;
+  height: 12px;
+  background: #3b82f6;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  transition: left 0.1s ease;
+}
+
+.time-display {
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.control-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.left-controls,
+.right-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.control-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  &.play-btn {
+    width: 48px;
+    height: 48px;
+    background: #3b82f6;
+
+    &:hover {
+      background: #2563eb;
+    }
+  }
+}
+
+/* Volume Control */
+.volume-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.volume-slider {
+  width: 80px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: #3b82f6;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+}
+
+/* Speed Control */
+.speed-control {
+  position: relative;
+}
+
+.speed-btn {
+  font-size: 0.875rem;
+  font-weight: 600;
+  width: auto;
+  padding: 0 0.75rem;
+  border-radius: 6px;
+}
+
+.speed-menu {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  background: #1e293b;
+  border-radius: 8px;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  display: none;
+  flex-direction: column;
+  gap: 0.25rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+
+  button {
+    background: none;
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+.speed-control:hover .speed-menu {
+  display: flex;
+}
+
+/* PDF Container */
+.pdf-container,
+.text-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+}
+
+.pdf-header,
+.text-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+  }
+}
+
+.mark-complete-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #2563eb;
+  }
+
+  &.completed {
+    background: #10b981;
+    
+    &:hover {
+      background: #059669;
+    }
+  }
+}
+
+.pdf-viewer {
+  flex: 1;
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+/* Text Content */
+.text-content {
+  flex: 1;
+  line-height: 1.7;
+  color: #374151;
+  font-size: 1rem;
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #1e293b;
+    margin: 1.5rem 0 1rem;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 1rem 0;
+  }
+
+  code {
+    background: #f3f4f6;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 0.875rem;
+  }
+
+  pre {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  ul, ol {
+    margin: 1rem 0;
+    padding-left: 2rem;
+
+    li {
+      margin: 0.5rem 0;
+    }
+  }
+}
+
+/* Quiz Container */
+.quiz-container-wrapper {
+  flex: 1;
+  padding: 2rem;
+  background: #f8fafc;
+  overflow-y: auto;
+}
+
+/* Content Tabs */
+.content-tabs {
+  border-top: 1px solid #e2e8f0;
+  background: #ffffff;
+}
+
+.tab-nav {
+  display: flex;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.tab-btn {
+  padding: 1rem 2rem;
+  background: none;
+  border: none;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: #1e293b;
+    background: #f8fafc;
+  }
+
+  &.active {
+    color: #3b82f6;
+    border-bottom-color: #3b82f6;
+  }
+}
+
+.tab-content {
+  padding: 2rem;
+}
+
+/* Tab Panel Content */
+.overview-content {
+  h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 1rem;
+  }
+
+  p {
+    color: #64748b;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      color: #374151;
+
+      &::before {
+        content: '✓';
+        color: #10b981;
+        font-weight: bold;
+        flex-shrink: 0;
+        margin-top: 0.125rem;
+      }
+    }
+  }
+}
+
+.skills-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.skill-tag {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: #f1f5f9;
+  color: #475569;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Author Section */
+.author-section {
+  .author-header {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .author-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .author-info {
+    flex: 1;
+
+    .author-name {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin: 0 0 0.5rem;
+    }
+
+    .author-title {
+      color: #64748b;
+      margin: 0 0 1rem;
+    }
+  }
+
+  .author-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #64748b;
+      font-size: 0.875rem;
+
+      .stars {
+        color: #fbbf24;
+
+        i {
+          margin-right: 0.125rem;
+        }
+      }
+    }
+  }
+
+  .author-bio {
+    margin-bottom: 2rem;
+
+    h4 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin: 0 0 1rem;
+    }
+
+    p {
+      color: #64748b;
+      line-height: 1.6;
+    }
+  }
+
+  .author-faqs {
+    h4 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin: 0 0 1.5rem;
+    }
+
+    .faq-item {
+      margin-bottom: 1.5rem;
+
+      .faq-question {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin: 0 0 0.5rem;
+      }
+
+      .faq-answer {
+        color: #64748b;
+        line-height: 1.6;
+        margin: 0;
+      }
+    }
+  }
+}
+
+/* Testimonials */
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.testimonial-card {
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+
+  .testimonial-rating {
+    margin-bottom: 1rem;
+
+    .stars {
+      color: #fbbf24;
+
+      i {
+        margin-right: 0.125rem;
+      }
+    }
+  }
+
+  .testimonial-text {
+    color: #374151;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+  }
+
+  .testimonial-reviewer {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .reviewer-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .reviewer-info {
+      .reviewer-name {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin: 0 0 0.25rem;
+      }
+
+      .reviewer-title {
+        font-size: 0.875rem;
+        color: #64748b;
+        margin: 0;
+      }
+    }
+  }
+}
+
+/* Curriculum Panel (Right) */
+.curriculum-panel {
+  width: 400px;
+  background: #ffffff;
+  border-left: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.curriculum-header {
+  padding: 2rem 1.5rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 0.5rem;
+  }
+
+  .curriculum-stats {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin: 0;
+  }
+}
+
+.curriculum-sections {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 0;
+}
+
+.curriculum-section {
+  border-bottom: 1px solid #f1f5f9;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #f8fafc;
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 600;
+    color: #1e293b;
+
+    i {
+      color: #64748b;
+      transition: transform 0.2s ease;
+    }
+  }
+
+  .section-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-size: 0.75rem;
+    color: #64748b;
+
+    .lecture-count {
+      margin-bottom: 0.125rem;
+    }
+  }
+}
+
+.section-lectures {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+
+  &.expanded {
+    max-height: 1000px;
+  }
+}
+
+.lecture-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem 0.75rem 3rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+
+  &:hover {
+    background: #f8fafc;
+  }
+
+  &.current {
+    background: #eff6ff;
+    border-left-color: #3b82f6;
+
+    .lecture-title {
+      color: #3b82f6;
+      font-weight: 600;
+    }
+  }
+
+  &.completed {
+    .lecture-title {
+      text-decoration: line-through;
+      opacity: 0.7;
+    }
+  }
+}
+
+.lecture-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.lecture-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+
+  .completed-icon {
+    color: #10b981;
+    font-size: 1.25rem;
+  }
+
+  .current-icon {
+    color: #3b82f6;
+    font-size: 1rem;
+  }
+
+  .type-icon {
+    font-size: 0.875rem;
+  }
+}
+
+.lecture-details {
+  flex: 1;
+  min-width: 0;
+
+  .lecture-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin: 0 0 0.25rem;
+    line-height: 1.4;
+  }
+
+  .lecture-duration {
+    font-size: 0.75rem;
+    color: #64748b;
+  }
+}
+
+/* Navigation Buttons */
+.curriculum-navigation {
+  display: flex;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e2e8f0;
+  gap: 0.75rem;
+}
+
+.nav-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #374151;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+  }
+
+  &.next-btn {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+
+    &:hover {
+      background: #2563eb;
+    }
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .curriculum-panel {
+    width: 350px;
+  }
+}
+
+@media (max-width: 768px) {
+  .course-header {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+
+    .breadcrumb {
+      justify-content: flex-start;
+    }
+
+    .course-progress {
+      justify-content: space-between;
+    }
+  }
+
+  .main-content {
+    flex-direction: column;
+  }
+
+  .curriculum-panel {
+    width: 100%;
+    max-height: 40vh;
+  }
+
+  .content-tabs {
+    order: -1;
+  }
+
+  .tab-nav {
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .tab-btn {
+    padding: 0.75rem 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .author-section .author-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .author-stats {
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .course-header {
+    padding: 0.75rem;
+  }
+
+  .course-title {
+    font-size: 1rem;
+  }
+
+  .progress-bar-container {
+    width: 150px;
+  }
+
+  .tab-content,
+  .pdf-container,
+  .text-container {
+    padding: 1rem;
+  }
+
+  .video-controls {
+    padding: 1rem 1rem 0.75rem;
+  }
+
+  .control-buttons {
+    flex-direction: column;
+    gap: 1rem;
+
+    .left-controls,
+    .right-controls {
+      justify-content: center;
+    }
+  }
+}

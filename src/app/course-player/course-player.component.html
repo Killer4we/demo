@@ -1,0 +1,353 @@
+<div class="course-player-container">
+  <!-- Header Navigation -->
+  <div class="course-header">
+    <div class="breadcrumb">
+      <button class="back-btn" (click)="goBackToCourse()">
+        <i class="fas fa-arrow-left"></i>
+      </button>
+      <span class="course-title">{{ course.title }}</span>
+    </div>
+    <div class="course-progress" *ngIf="course">
+      <span class="completed-count">{{ completedLectures.size }}/{{ course.totalLectures }} completed</span>
+      <div class="progress-bar-container">
+        <div class="progress-bar" [style.width.%]="(completedLectures.size / course.totalLectures) * 100"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="main-content">
+    <!-- Left Panel - Content Player -->
+    <div class="content-panel">
+      <!-- Video Player -->
+      <div class="video-container" 
+           *ngIf="currentLecture?.type === 'video'"
+           (mousemove)="showVideoControls()"
+           (mouseleave)="setupControlsTimeout()">
+        
+        <!-- Video Element -->
+        <video 
+          #videoPlayer
+          [src]="currentLecture.videoUrl"
+          (timeupdate)="onVideoTimeUpdate()"
+          (loadedmetadata)="onVideoLoadedMetadata()"
+          (ended)="onVideoEnded()"
+          (play)="isPlaying = true"
+          (pause)="isPlaying = false"
+          (error)="onVideoError($event)"
+          (canplay)="onVideoCanPlay()"
+          preload="metadata"
+          controls="false"
+          playsinline>
+          Your browser does not support the video tag.
+        </video>
+
+        <!-- Loading Indicator -->
+        <div class="video-loading" *ngIf="!videoReady && !videoError">
+          <div class="loading-spinner"></div>
+          <p>Loading video...</p>
+        </div>
+
+        <!-- Error Display -->
+        <div class="video-error" *ngIf="videoError">
+          <i class="fas fa-exclamation-triangle"></i>
+          <h4>Video could not be loaded</h4>
+          <p>{{ videoErrorMessage }}</p>
+          <button class="retry-btn" (click)="retryVideo()">
+            <i class="fas fa-redo"></i>
+            Retry
+          </button>
+        </div>
+
+        <!-- Custom Video Controls -->
+        <div class="video-controls" 
+             [class.show]="showControls && videoReady && !videoError"
+             *ngIf="videoReady && !videoError">
+          <!-- Progress Bar -->
+          <div class="progress-container">
+            <div class="progress-track" (click)="seekTo($event)">
+              <div class="progress-fill" [style.width.%]="getProgressPercentage()"></div>
+              <div class="progress-handle" [style.left.%]="getProgressPercentage()"></div>
+            </div>
+            <div class="time-display">
+              <span>{{ formatTime(currentTime) }} / {{ formatTime(duration) }}</span>
+            </div>
+          </div>
+
+          <!-- Control Buttons -->
+          <div class="control-buttons">
+            <div class="left-controls">
+              <button class="control-btn" (click)="goToPreviousLecture()">
+                <i class="fas fa-step-backward"></i>
+              </button>
+              <button class="control-btn play-btn" (click)="togglePlay()">
+                <i [class]="isPlaying ? 'fas fa-pause' : 'fas fa-play'"></i>
+              </button>
+              <button class="control-btn" (click)="goToNextLecture()">
+                <i class="fas fa-step-forward"></i>
+              </button>
+              
+              <div class="volume-control">
+                <button class="control-btn">
+                  <i class="fas fa-volume-up"></i>
+                </button>
+                <input type="range" 
+                       min="0" 
+                       max="1" 
+                       step="0.1" 
+                       [value]="volume" 
+                       (input)="setVolume($event)"
+                       class="volume-slider">
+              </div>
+            </div>
+
+            <div class="right-controls">
+              <!-- Speed Control -->
+              <div class="speed-control">
+                <button class="control-btn speed-btn">
+                  {{ playbackSpeed }}x
+                </button>
+                <div class="speed-menu">
+                  <button (click)="setPlaybackSpeed(0.5)">0.5x</button>
+                  <button (click)="setPlaybackSpeed(0.75)">0.75x</button>
+                  <button (click)="setPlaybackSpeed(1)">1x</button>
+                  <button (click)="setPlaybackSpeed(1.25)">1.25x</button>
+                  <button (click)="setPlaybackSpeed(1.5)">1.5x</button>
+                  <button (click)="setPlaybackSpeed(2)">2x</button>
+                </div>
+              </div>
+
+              <button class="control-btn" (click)="toggleFullscreen()">
+                <i class="fas fa-expand"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PDF Viewer -->
+      <div class="pdf-container" *ngIf="currentLecture?.type === 'pdf'">
+        <div class="pdf-header">
+          <h3>{{ currentLecture.title }}</h3>
+          <button class="mark-complete-btn" 
+                  [class.completed]="isLectureCompleted(currentLecture.id)"
+                  (click)="markLectureCompleted(currentLecture.id)">
+            <i class="fas fa-check"></i>
+            {{ isLectureCompleted(currentLecture.id) ? 'Completed' : 'Mark as Complete' }}
+          </button>
+        </div>
+        <iframe 
+          [src]="currentLecture.pdfUrl" 
+          class="pdf-viewer"
+          frameborder="0">
+        </iframe>
+      </div>
+
+      <!-- Text Content Viewer -->
+      <div class="text-container" *ngIf="currentLecture?.type === 'text'">
+        <div class="text-header">
+          <h3>{{ currentLecture.title }}</h3>
+          <button class="mark-complete-btn" 
+                  [class.completed]="isLectureCompleted(currentLecture.id)"
+                  (click)="markLectureCompleted(currentLecture.id)">
+            <i class="fas fa-check"></i>
+            {{ isLectureCompleted(currentLecture.id) ? 'Completed' : 'Mark as Complete' }}
+          </button>
+        </div>
+        <div class="text-content" [innerHTML]="currentLecture.textContent"></div>
+      </div>
+
+      <!-- Quiz Viewer -->
+      <div class="quiz-container-wrapper" *ngIf="currentLecture?.type === 'quiz'">
+        <app-quiz 
+          [quiz]="currentLecture.quizData"
+          (quizCompleted)="onQuizCompleted($event)">
+        </app-quiz>
+      </div>
+
+      <!-- Content Tabs (Reused from Course Detail) -->
+      <div class="content-tabs">
+        <div class="tab-nav">
+          <button 
+            class="tab-btn" 
+            [class.active]="activeContentTab === 'overview'"
+            (click)="switchContentTab('overview')">
+            Overview
+          </button>
+          <button 
+            class="tab-btn" 
+            [class.active]="activeContentTab === 'author'"
+            (click)="switchContentTab('author')">
+            Author Details
+          </button>
+          <button 
+            class="tab-btn" 
+            [class.active]="activeContentTab === 'testimonials'"
+            (click)="switchContentTab('testimonials')">
+            Testimonials
+          </button>
+        </div>
+
+        <div class="tab-content">
+          <!-- Overview Tab -->
+          <div class="tab-panel" *ngIf="activeContentTab === 'overview'">
+            <div class="overview-content">
+              <h4>About this Course</h4>
+              <p>{{ course.description }}</p>
+              
+              <div class="what-youll-learn" *ngIf="course">
+                <h4>What you'll learn</h4>
+                <ul>
+                  <li>Analyze data using spreadsheets, SQL, and R programming</li>
+                  <li>Create visualizations and dashboards using Tableau</li>
+                  <li>Apply statistical analysis and hypothesis testing</li>
+                  <li>Clean and organize data for analysis</li>
+                  <li>Present findings through compelling storytelling</li>
+                  <li>Understand the data analytics process from start to finish</li>
+                </ul>
+              </div>
+
+              <div class="skills-youll-gain">
+                <h4>Skills you'll gain</h4>
+                <div class="skills-tags">
+                  <span class="skill-tag">Data Analysis</span>
+                  <span class="skill-tag">Statistical Analysis</span>
+                  <span class="skill-tag">Data Visualization</span>
+                  <span class="skill-tag">SQL</span>
+                  <span class="skill-tag">Tableau</span>
+                  <span class="skill-tag">R Programming</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Author Details Tab -->
+          <div class="tab-panel" *ngIf="activeContentTab === 'author'">
+            <div class="author-section">
+              <div class="author-header">
+                <img [src]="author.avatar" [alt]="author.name" class="author-avatar">
+                <div class="author-info">
+                  <h3 class="author-name">{{ author.name }}</h3>
+                  <p class="author-title">{{ author.title }}</p>
+                  <div class="author-stats">
+                    <div class="stat">
+                      <div class="stars">
+                        <i *ngFor="let star of getStarArray(author.rating)" 
+                           [class]="star === 1 ? 'fas fa-star' : star === 0.5 ? 'fas fa-star-half-alt' : 'far fa-star'">
+                        </i>
+                      </div>
+                      <span>{{ author.rating }} Instructor Rating</span>
+                    </div>
+                    <div class="stat">
+                      <i class="fas fa-users"></i>
+                      <span>{{ author.students }} Students</span>
+                    </div>
+                    <div class="stat">
+                      <i class="fas fa-play-circle"></i>
+                      <span>{{ author.courses }} Courses</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="author-bio">
+                <h4>About the Instructor</h4>
+                <p>{{ author.bio }}</p>
+              </div>
+
+              <div class="author-faqs">
+                <h4>Frequently Asked Questions</h4>
+                <div class="faq-item" *ngFor="let faq of author.faqs">
+                  <h5 class="faq-question">{{ faq.question }}</h5>
+                  <p class="faq-answer">{{ faq.answer }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonials Tab -->
+          <div class="tab-panel" *ngIf="activeContentTab === 'testimonials'">
+            <div class="testimonials-grid">
+              <div class="testimonial-card" *ngFor="let testimonial of testimonials">
+                <div class="testimonial-rating">
+                  <div class="stars">
+                    <i *ngFor="let star of getStarArray(testimonial.rating)" 
+                       class="fas fa-star">
+                    </i>
+                  </div>
+                </div>
+                <p class="testimonial-text">{{ testimonial.text }}</p>
+                <div class="testimonial-reviewer">
+                  <img [src]="testimonial.reviewer.avatar" [alt]="testimonial.reviewer.name" class="reviewer-avatar">
+                  <div class="reviewer-info">
+                    <h4 class="reviewer-name">{{ testimonial.reviewer.name }}</h4>
+                    <p class="reviewer-title">{{ testimonial.reviewer.title }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel - Course Curriculum -->
+    <div class="curriculum-panel">
+      <div class="curriculum-header">
+        <h3>Course Content</h3>
+        <p class="curriculum-stats" *ngIf="course">
+          {{ course.sections.length }} sections • {{ course.totalLectures }} lectures • {{ course.totalDuration }}
+        </p>
+      </div>
+
+      <div class="curriculum-sections" *ngIf="course">
+        <div class="curriculum-section" *ngFor="let section of course.sections">
+          <div class="section-header" (click)="toggleSection(section.id)">
+            <div class="section-title">
+              <i [class]="section.isExpanded ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
+              <span>{{ section.title }}</span>
+            </div>
+            <div class="section-meta">
+              <span class="lecture-count">{{ section.lectureCount }} lectures</span>
+              <span class="section-duration">{{ section.duration }}</span>
+            </div>
+          </div>
+
+          <div class="section-lectures" [class.expanded]="section.isExpanded">
+            <div class="lecture-item" 
+                 *ngFor="let lecture of section.lectures"
+                 [class.current]="isCurrentLecture(lecture.id)"
+                 [class.completed]="isLectureCompleted(lecture.id)"
+                 (click)="goToLecture(lecture.id)">
+              <div class="lecture-info">
+                <div class="lecture-icon">
+                  <i class="fas fa-check-circle completed-icon" *ngIf="isLectureCompleted(lecture.id)"></i>
+                  <i class="fas fa-play current-icon" *ngIf="isCurrentLecture(lecture.id) && !isLectureCompleted(lecture.id)"></i>
+                  <span class="type-icon" *ngIf="!isCurrentLecture(lecture.id) && !isLectureCompleted(lecture.id)">
+                    {{ getLectureIcon(lecture.type) }}
+                  </span>
+                </div>
+                <div class="lecture-details">
+                  <h4 class="lecture-title">{{ lecture.title }}</h4>
+                  <span class="lecture-duration">{{ lecture.duration }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Buttons -->
+      <div class="curriculum-navigation">
+        <button class="nav-btn prev-btn" (click)="goToPreviousLecture()">
+          <i class="fas fa-arrow-left"></i>
+          Previous
+        </button>
+        <button class="nav-btn next-btn" (click)="goToNextLecture()">
+          Next
+          <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -369,7 +369,8 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
   enrollInCourse() {
     if (this.course) {
       console.log('Enrolling in course:', this.course.id);
-      // Implement enrollment logic
+      // Navigate to the first lecture of the course
+      this.router.navigate(['/learn', this.course.id, 'lecture', 1]);
     }
   }
 
