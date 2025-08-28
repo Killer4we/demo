@@ -1,6 +1,6 @@
 <div class="course-card" (click)="navigateToCourse()">
   <div class="course-thumbnail">
-    <img [src]="course.thumbnail" [alt]="course.title" class="thumbnail-image">
+    <img [src]="course.thumbnail || 'https://via.placeholder.com/300x180'" [alt]="course.title || 'Course'" class="thumbnail-image">
     
     <!-- Progress Overlay -->
     <div class="progress-overlay" *ngIf="course.progress">
@@ -18,12 +18,12 @@
 
   <div class="course-content">
     <!-- Course Title -->
-    <h3 class="course-title">{{ course.title }}</h3>
+    <h3 class="course-title">{{ course.title || 'Untitled Course' }}</h3>
 
     <!-- Provider -->
     <div class="course-provider" (click)="onProviderClick($event)">
-      <img [src]="course.providerLogo" [alt]="course.provider" class="provider-logo">
-      <span class="provider-name">{{ course.provider }}</span>
+      <img [src]="course.providerLogo || 'https://via.placeholder.com/40x40'" [alt]="course.provider || 'Provider'" class="provider-logo">
+      <span class="provider-name">{{ course.provider || 'Unknown Provider' }}</span>
     </div>
 
     <!-- Rating and Reviews -->
@@ -35,8 +35,8 @@
           class="star">
         </i>
       </div>
-      <span class="rating-value">{{ course.rating }}</span>
-      <span class="review-count">({{ course.reviews }} reviews)</span>
+      <span class="rating-value">{{ course.rating || 0 }}</span>
+      <span class="review-count">({{ course.reviews || 0 }} reviews)</span>
     </div>
 
     <!-- Course Metadata -->
@@ -44,18 +44,18 @@
       <div class="metadata-row">
         <span class="metadata-item">
           <i class="fas fa-users"></i>
-          {{ course.enrollments }} Enrolled
+          {{ course.enrollments || '0' }} Enrolled
         </span>
         <span class="metadata-item" [class]="difficultyClass">
           <i class="fas fa-signal"></i>
-          {{ course.difficulty }}
+          {{ course.difficulty || 'Beginner' }}
         </span>
       </div>
       
       <div class="metadata-row">
         <span class="metadata-item">
           <i class="fas fa-clock"></i>
-          {{ course.duration }}
+          {{ course.duration || 'TBD' }}
         </span>
         <span class="metadata-item" *ngIf="course.price">
           <i class="fas fa-tag"></i>

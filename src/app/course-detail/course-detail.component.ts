@@ -269,36 +269,40 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
   private loadCourse(courseId: number) {
     this.isLoading = true;
     
-    // Try to get course from the service first
-    const courseFromService = this.courseService.getCourseById(courseId);
-    
-    if (courseFromService) {
-      // If found in service, use it and enhance with additional properties
-      this.course = {
-        ...courseFromService,
-        category: 'Data Science',
-        publishedDate: '2024-01-15',
-        description: 'Become a Prompt Engineering Expert. Master prompt engineering patterns, techniques, and approaches to effectively leverage Generative AI.',
-        whatYoullLearn: [
-          'Analyze data using spreadsheets, SQL, and R programming',
-          'Create visualizations and dashboards using Tableau',
-          'Apply statistical analysis and hypothesis testing',
-          'Clean and organize data for analysis',
-          'Present findings through compelling storytelling',
-          'Understand the data analytics process from start to finish'
-        ],
-        skillsYoullGain: ['Data Analysis', 'Statistical Analysis', 'Data Visualization', 'SQL', 'Tableau', 'R Programming', 'Spreadsheets', 'Data Cleaning'],
-        requirements: [
-          'No prior experience required',
-          'Basic computer skills',
-          'Access to a computer with internet connection',
-          'Willingness to learn and practice'
-        ]
-      };
-      this.isLoading = false;
-    } else {
-      // Fallback to mock data if course not found in service
-      setTimeout(() => {
+    this.courseService.getCourseById(courseId).subscribe({
+      next: (courseFromAPI: any) => {
+        if (courseFromAPI) {
+          // Use API course data and enhance with additional properties
+          this.course = {
+            ...courseFromAPI,
+            category: 'Data Science',
+            publishedDate: '2024-01-15',
+            description: 'Become a Prompt Engineering Expert. Master prompt engineering patterns, techniques, and approaches to effectively leverage Generative AI.',
+            whatYoullLearn: [
+              'Analyze data using spreadsheets, SQL, and R programming',
+              'Create visualizations and dashboards using Tableau',
+              'Apply statistical analysis and hypothesis testing',
+              'Clean and organize data for analysis',
+              'Present findings through compelling storytelling',
+              'Understand the data analytics process from start to finish'
+            ],
+            skillsYoullGain: ['Data Analysis', 'Statistical Analysis', 'Data Visualization', 'SQL', 'Tableau', 'R Programming', 'Spreadsheets', 'Data Cleaning'],
+            requirements: [
+              'No prior experience required',
+              'Basic computer skills',
+              'Access to a computer with internet connection',
+              'Willingness to learn and practice'
+            ]
+          };
+        } else {
+          // Fallback if course not found
+          this.course = null;
+        }
+        this.isLoading = false;
+      },
+      error: (error: any) => {
+        console.error('Error loading course:', error);
+        // Fallback to mock data if API fails
         this.course = {
           id: courseId,
           title: 'Google Data Analytics',
@@ -335,8 +339,8 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
           ]
         };
         this.isLoading = false;
-      }, 500);
-    }
+      }
+    });
   }
 
   switchTab(tab: string) {

@@ -43,7 +43,24 @@ export class DashboardComponent implements OnInit {
   }
 
   private loadCourses() {
-    this.lastViewedCourses = this.courseService.getLastViewedCourses();
-    this.newlyLaunchedCourses = this.courseService.getNewlyLaunchedCourses();
+    this.courseService.getLastViewedCourses().subscribe({
+      next: (courses: any[]) => {
+        this.lastViewedCourses = courses;
+      },
+      error: (error: any) => {
+        console.error('Error loading last viewed courses:', error);
+        this.lastViewedCourses = [];
+      }
+    });
+
+    this.courseService.getNewlyLaunchedCourses().subscribe({
+      next: (courses: any[]) => {
+        this.newlyLaunchedCourses = courses;
+      },
+      error: (error: any) => {
+        console.error('Error loading newly launched courses:', error);
+        this.newlyLaunchedCourses = [];
+      }
+    });
   }
 }

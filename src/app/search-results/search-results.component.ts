@@ -95,11 +95,26 @@ export class SearchResultsComponent implements OnInit {
   }
 
   performSearch() {
-    // Get search results from service
-    this.originalResults = this.courseService.searchCourses(this.searchQuery, true); // true for extended search
-    this.filteredResults = [...this.originalResults];
-    this.totalResults = this.filteredResults.length;
-    this.applyFilters();
+    if (this.searchQuery.trim()) {
+      this.courseService.searchCourses(this.searchQuery).subscribe({
+        next: (results: any[]) => {
+          this.originalResults = results;
+          this.filteredResults = [...this.originalResults];
+          this.totalResults = this.filteredResults.length;
+          this.applyFilters();
+        },
+        error: (error: any) => {
+          console.error('Error searching courses:', error);
+          this.originalResults = [];
+          this.filteredResults = [];
+          this.totalResults = 0;
+        }
+      });
+    } else {
+      this.originalResults = [];
+      this.filteredResults = [];
+      this.totalResults = 0;
+    }
   }
 
   onFilterChange() {
@@ -111,7 +126,7 @@ export class SearchResultsComponent implements OnInit {
       // Duration filter
       if (this.filters.duration.length > 0) {
         const matchesDuration = this.filters.duration.some(duration => {
-          return this.checkDurationMatch(course.duration, duration);
+          return this.checkDurationMatch(course.duration || '', duration);
         });
         if (!matchesDuration) return false;
       }
@@ -119,20 +134,26 @@ export class SearchResultsComponent implements OnInit {
       // Rating filter
       if (this.filters.rating.length > 0) {
         const minRating = Math.min(...this.filters.rating);
-        if (course.rating < minRating) return false;
+        if ((course.rating || 0) < minRating) return false;
       }
 
       // Course level filter
       if (this.filters.courseLevel.length > 0 && !this.filters.courseLevel.includes('all')) {
         const matchesLevel = this.filters.courseLevel.some(level => 
-          course.difficulty.toLowerCase() === level.toLowerCase()
+          (course.difficulty || '').toLowerCase() === level.toLowerCase()
         );
         if (!matchesLevel) return false;
       }
 
+      // Published date filter
+      if (this.filters.publishedDate.length > 0 && !this.filters.publishedDate.includes('all')) {
+        // Add published date filtering logic here if needed
+        // For now, we'll skip this filter
+      }
+
       // AI content filter
       if (this.filters.aiContent) {
-        const hasAIContent = course.tags.some((tag: string) => 
+        const hasAIContent = course.tags && course.tags.some((tag: string) => 
           tag.toLowerCase().includes('ai') || 
           tag.toLowerCase().includes('artificial intelligence') ||
           tag.toLowerCase().includes('machine learning')
@@ -175,16 +196,20 @@ export class SearchResultsComponent implements OnInit {
     switch (this.sortBy) {
       case 'latest':
         // Sort by newest first (mock implementation)
-        this.filteredResults.sort((a, b) => b.id - a.id);
+        this.filteredResults.sort((a, b) => (b.id || 0) - (a.id || 0));
         break;
       case 'popular':
-        this.filteredResults.sort((a, b) => parseInt(b.enrollments) - parseInt(a.enrollments));
+        this.filteredResults.sort((a, b) => {
+          const enrollmentsA = parseInt((a.enrollments || '0').replace(/[,]/g, '')) || 0;
+          const enrollmentsB = parseInt((b.enrollments || '0').replace(/[,]/g, '')) || 0;
+          return enrollmentsB - enrollmentsA;
+        });
         break;
       case 'rating':
-        this.filteredResults.sort((a, b) => b.rating - a.rating);
+        this.filteredResults.sort((a, b) => (b.rating || 0) - (a.rating || 0));
         break;
       case 'alphabetical':
-        this.filteredResults.sort((a, b) => a.title.localeCompare(b.title));
+        this.filteredResults.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
         break;
     }
   }
@@ -207,7 +232,15 @@ export class SearchResultsComponent implements OnInit {
   toggleFilter(filterType: keyof FilterOptions, value: any) {
     if (filterType === 'aiContent') {
       this.filters.aiContent = !this.filters.aiContent;
+    } else if (filterType === 'publishedDate' || filterType === 'courseLevel') {
+      // Handle radio button behavior - only one selection allowed
+      const filterArray = this.filters[filterType] as any[];
+      filterArray.length = 0; // Clear existing selections
+      if (value !== 'all') {
+        filterArray.push(value);
+      }
     } else {
+      // Handle checkbox behavior - multiple selections allowed
       const filterArray = this.filters[filterType] as any[];
       const index = filterArray.indexOf(value);
       if (index > -1) {

@@ -66,8 +66,16 @@ export class HeaderComponent implements OnInit {
 
   onSearchInput() {
     if (this.searchQuery.length > 0) {
-      this.searchSuggestions = this.courseService.searchCourses(this.searchQuery);
-      this.showSuggestions = this.searchSuggestions.length > 0;
+      this.courseService.searchCourses(this.searchQuery).subscribe({
+        next: (courses: any[]) => {
+          this.searchSuggestions = courses.slice(0, 5);
+          this.showSuggestions = this.searchSuggestions.length > 0;
+        },
+        error: (error: any) => {
+          console.error('Search error:', error);
+          this.showSuggestions = false;
+        }
+      });
     } else {
       this.showSuggestions = false;
     }
